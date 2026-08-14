@@ -170,6 +170,21 @@
   .instance-row a:hover{text-decoration:underline;}
   .badge-num{background:#eef0f2;border-radius:3px;padding:2px 7px;font-size:12px;color:var(--sky-text-dim);}
 
+  .back-arrow{cursor:pointer;color:var(--sky-text-dim);font-size:18px;margin-right:2px;}
+  .back-arrow:hover{color:var(--sky-blue);}
+  .dl-grid{font-size:13px;}
+  .dl-row{display:grid;grid-template-columns:150px 1fr;gap:10px;padding:8px 0;border-bottom:1px dotted var(--sky-border);}
+  .dl-row:last-child{border-bottom:0;}
+  .dl-row .k{color:var(--sky-text-dim);}
+  .dl-row .v a{color:var(--sky-blue);text-decoration:none;}
+  .dl-row .v a:hover{text-decoration:underline;}
+  .dl-row .v.muted{color:#9aa0a6;font-style:italic;}
+  .gift-note{color:var(--sky-text-dim);font-size:12px;margin-top:2px;}
+  .attach-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dotted var(--sky-border);}
+  .attach-row:last-child{border-bottom:0;}
+  .attach-row .a-name{color:var(--sky-blue);font-weight:600;}
+  .attach-row .a-meta{font-size:12px;color:var(--sky-text-dim);}
+
   /* ---- Drawer ---- */
   .overlay{position:fixed;inset:0;background:rgba(20,30,38,.35);display:none;z-index:50;}
   .overlay.open{display:block;}
@@ -318,6 +333,9 @@
 
     <!-- ================= RECORD DETAIL VIEW ================= -->
     <div id="detailView" class="hidden"></div>
+
+    <!-- ================= INSTANCE DETAIL VIEW ================= -->
+    <div id="instanceDetailView" class="hidden"></div>
   </div>
 </div>
 
@@ -643,14 +661,20 @@ function renderAdmin(){
    Instance List
    ===================================================================== */
 const INSTANCE_STATUSES = ["Assigned","Proposed","Inactive (Canceled)","Inactive (Unavailable)","Proposal Draft - Pending Approval"];
+const RELATIONS = ["Spouse","Friend","Colleague","Sibling"];
 function makeInstance(i){
   const opp = DATA[i % DATA.length];
   const person = PEOPLE[i % PEOPLE.length];
   const status = INSTANCE_STATUSES[i % INSTANCE_STATUSES.length];
+  const related = i % 3 === 0 ? [`${PEOPLE[(i+1)%PEOPLE.length]} - ${RELATIONS[i%RELATIONS.length]}`, `${PEOPLE[(i+3)%PEOPLE.length]} - ${RELATIONS[(i+1)%RELATIONS.length]}`] : (i % 3 === 1 ? [`${PEOPLE[(i+2)%PEOPLE.length]} - ${RELATIONS[(i+2)%RELATIONS.length]}`] : []);
+  const gifts = [];
+  if(i % 2 === 0) gifts.push({amount: (500 + i*137) % 12000 + 250, donor: PEOPLE[(i+4)%PEOPLE.length], date: "02/02/2024", fund: FUNDS[i%FUNDS.length], note: "This was his first installment"});
+  if(i % 4 === 0) gifts.push({amount: (i*37) % 900 + 50, donor: PEOPLE[(i+5)%PEOPLE.length], date: "02/19/2026", fund: FUNDS[(i+1)%FUNDS.length], note: "Note goes here"});
   return {
     id: i+1,
     name: `${person} - ${opp.name}`,
     constituent: person,
+    opportunityId: opp.id,
     opportunity: opp.name,
     dedication: "-",
     startDate: i % 3 === 0 ? "2025-08-22" : "-",
@@ -660,7 +684,13 @@ function makeInstance(i){
     fund: i % 2 === 0 ? FUNDS[i % FUNDS.length] : "-",
     status,
     dateProposed: i % 3 === 0 ? "2026-05-05" : "-",
-    qty: 1
+    qty: 1,
+    relatedConstituents: related,
+    fundraiser: i % 2 === 0 ? `${PEOPLE[(i+6)%PEOPLE.length]} - Fundraiser #1` : null,
+    gifts,
+    customField: i % 3 === 0 ? "Test" : null,
+    specificLocation: i % 3 === 0 ? "Sign located on front of building" : null,
+    attachments: i % 5 === 0 ? [{name:"Test Document", date:"09/01/2025", size:"0.01 MB"}] : [],
   };
 }
 let INSTANCES = Array.from({length: 42}, (_,i)=> makeInstance(i));
@@ -701,9 +731,9 @@ function renderInstances(){
               <td class="sky-grid-cell col-check"><input type="checkbox"></td>
               <td class="sky-grid-cell col-icon"><button class="row-icon-btn" title="Edit"><i class="fa fa-pencil"></i></button></td>
               <td class="sky-grid-cell col-icon"><button class="row-icon-btn" title="Remove"><i class="fa fa-times-circle"></i></button></td>
-              <td class="sky-grid-cell"><a class="name-link">${r.name}</a></td>
+              <td class="sky-grid-cell"><a class="name-link" data-goto-instance="${r.id}">${r.name}</a></td>
               <td class="sky-grid-cell">${r.constituent}</td>
-              <td class="sky-grid-cell"><a class="name-link" data-goto="${r.id}">${r.opportunity}</a></td>
+              <td class="sky-grid-cell"><a class="name-link" data-goto="${r.opportunityId}">${r.opportunity}</a></td>
               <td class="sky-grid-cell">${r.dedication}</td>
               <td class="sky-grid-cell">${r.startDate}</td>
               <td class="sky-grid-cell">${r.endDate}</td>
@@ -721,10 +751,10 @@ function renderInstances(){
     <div class="footer-row"><div>Showing 1-${INSTANCES.length} of ${INSTANCES.length}</div></div>
   `;
   el.querySelectorAll("[data-goto]").forEach(a=>{
-    a.addEventListener("click", ()=>{
-      const idx = Number(a.dataset.goto) % DATA.length;
-      openDetail(DATA[idx].id);
-    });
+    a.addEventListener("click", ()=> openDetail(Number(a.dataset.goto)));
+  });
+  el.querySelectorAll("[data-goto-instance]").forEach(a=>{
+    a.addEventListener("click", ()=> openInstanceDetail(Number(a.dataset.gotoInstance)));
   });
 }
 
@@ -821,6 +851,7 @@ function openDetail(id){
   const tv = document.getElementById("tabsView");
   const dv = document.getElementById("detailView");
   tv.classList.add("hidden");
+  document.getElementById("instanceDetailView").classList.add("hidden");
   dv.classList.remove("hidden");
 
   const leftKV = [
@@ -843,8 +874,9 @@ function openDetail(id){
     kvRow("Removal Template", "No information found", {muted:true}),
   ].join("");
 
-  const instancesHtml = r.assignedInstance
-    ? `<div class="instance-row"><div class="i-left"><button class="ellipsis-btn" style="background:none;border:0;color:#9ba3ab;"><i class="fa fa-ellipsis-h"></i></button><a>${r.assignedInstance}</a></div><div>${statusBox(r.status)} <i class="fa fa-chevron-down" style="color:#9ba3ab;margin-left:6px;"></i></div></div>`
+  const linkedInstance = INSTANCES.find(inst => inst.opportunityId === r.id);
+  const instancesHtml = linkedInstance
+    ? `<div class="instance-row"><div class="i-left"><button class="ellipsis-btn" style="background:none;border:0;color:#9ba3ab;"><i class="fa fa-ellipsis-h"></i></button><a data-open-instance="${linkedInstance.id}">${linkedInstance.name}</a></div><div>${statusBox(linkedInstance.status)} <i class="fa fa-chevron-down" style="color:#9ba3ab;margin-left:6px;"></i></div></div>`
     : `<div class="empty-note">No instances found</div>`;
 
   dv.innerHTML = `
@@ -891,7 +923,7 @@ function openDetail(id){
         <div class="card">
           <div class="card-head"><h3>Naming Opportunity Instances</h3><span class="drag">&#8942;&#8942;</span></div>
           <div class="card-body">
-            <span class="badge-num">${r.assignedInstance ? 1 : 0} Opportunity</span>
+            <span class="badge-num">${linkedInstance ? 1 : 0} Opportunity</span>
             <div style="margin:10px 0;display:flex;align-items:center;justify-content:space-between;">
               <button class="sky-btn sky-btn-default"><i class="fa fa-plus"></i> Add opportunity instance</button>
               <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--sky-text-dim);">
@@ -935,11 +967,146 @@ function openDetail(id){
     </div>
   `;
   document.getElementById("backToList").addEventListener("click", closeDetail);
+  const instLink = dv.querySelector("[data-open-instance]");
+  if(instLink) instLink.addEventListener("click", ()=> openInstanceDetail(Number(instLink.dataset.openInstance)));
 }
 
 function closeDetail(){
   detailId = null;
   document.getElementById("detailView").classList.add("hidden");
+  document.getElementById("tabsView").classList.remove("hidden");
+}
+
+/* =====================================================================
+   Instance Detail view
+   ===================================================================== */
+function dlRow(k, v, opts){
+  opts = opts || {};
+  const cls = opts.muted ? "v muted" : "v";
+  return `<div class="dl-row"><span class="k">${k}</span><span class="${cls}">${v}</span></div>`;
+}
+
+function openInstanceDetail(id){
+  const inst = INSTANCES.find(x => x.id === id);
+  const opp = DATA.find(d => d.id === inst.opportunityId);
+  document.getElementById("tabsView").classList.add("hidden");
+  document.getElementById("detailView").classList.add("hidden");
+  const iv = document.getElementById("instanceDetailView");
+  iv.classList.remove("hidden");
+
+  const relatedHtml = inst.relatedConstituents.length
+    ? inst.relatedConstituents.map(r => `<a>${r}</a>`).join(", ")
+    : `<span class="v muted" style="font-style:italic;">No information found</span>`;
+
+  const giftsHtml = inst.gifts.length
+    ? inst.gifts.map(g => `<div style="margin-bottom:8px;"><a>${money(g.amount)}.00</a> - <a>${g.donor}</a> - ${g.date} - ${g.fund}<div class="gift-note">${g.note}</div></div>`).join("")
+    : `<span class="v muted" style="font-style:italic;">No information found</span>`;
+
+  const rows = [
+    dlRow("Primary Constituent", `<a>${inst.constituent}</a>`),
+    dlRow("Related Constituents", relatedHtml),
+    dlRow("Fundraiser", inst.fundraiser ? `<a>${inst.fundraiser}</a>` : "No information found", {muted: !inst.fundraiser}),
+    dlRow("Gifts", giftsHtml),
+    dlRow("Opportunity", `<a data-open-opp="${opp.id}">${opp.name}</a>`),
+    dlRow("Fund", inst.fund !== "-" ? `<a>${inst.fund}</a>` : "No information found", {muted: inst.fund === "-"}),
+    dlRow("Campaign", inst.campaign !== "-" ? `<a>${inst.campaign}</a>` : "No information found", {muted: inst.campaign === "-"}),
+    dlRow("Instance Amount", inst.amount !== "-" ? inst.amount : "No information found", {muted: inst.amount === "-"}),
+    dlRow("Start Date", inst.startDate !== "-" ? inst.startDate : "No information found", {muted: inst.startDate === "-"}),
+    dlRow("End Date", inst.endDate !== "-" ? inst.endDate : "No information found", {muted: inst.endDate === "-"}),
+    dlRow("Custom Field Example", inst.customField || "No information found", {muted: !inst.customField}),
+    dlRow("Dedication", "No information found", {muted:true}),
+    dlRow("Comments", "No information found", {muted:true}),
+    dlRow("Specific Location", inst.specificLocation || "No information found", {muted: !inst.specificLocation}),
+  ].join("");
+
+  const attachHtml = inst.attachments.length
+    ? inst.attachments.map(a => `<div class="attach-row"><i class="fa fa-file-pdf-o" style="color:#e03131;font-size:20px;"></i><div><div class="a-name">${a.name}</div><div class="a-meta">${a.date} | ${a.size}</div></div></div>`).join("")
+    : "";
+  const totalSize = inst.attachments.reduce((s,a)=> s + parseFloat(a.size), 0).toFixed(2);
+
+  iv.innerHTML = `
+    <div class="page-head">
+      <h1><span class="back-arrow" id="instBackArrow" title="Back"><i class="fa fa-arrow-left"></i></span><span class="home-crumb" id="instHome" title="Naming Opportunities">&#8962;</span> ${inst.name}</h1>
+    </div>
+    <div style="margin-bottom:14px;">${statusBox(inst.status)}</div>
+    <div class="detail-summary">
+      <b>Naming Opportunity:</b> <a data-open-opp="${opp.id}">${opp.name}</a><br>
+      <b>Description:</b> ${opp.desc}<br>
+      <b>Type:</b> ${opp.type}<br>
+      <b>Location:</b> ${opp.loc}
+    </div>
+    <button class="sky-btn sky-btn-default" style="margin-bottom:20px;"><i class="fa fa-pencil"></i> Edit opportunity instance</button>
+
+    <div class="detail-columns">
+      <div class="detail-col">
+        <div class="card">
+          <div class="card-head"><h3>Details</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body"><div class="dl-grid">${rows}</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Pictures</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <div style="font-size:13px;margin-bottom:8px;">Add Picture (0/3)</div>
+            <input type="file" disabled style="font-size:12px;">
+            <div class="empty-note">No pictures uploaded</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-col">
+        <div class="card">
+          <div class="card-head"><h3>Attachments</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <button class="sky-btn sky-btn-default"><i class="fa fa-plus"></i> Add</button>
+              <span style="font-size:12px;color:var(--sky-text-dim);">${totalSize} MB</span>
+            </div>
+            ${attachHtml || `<div class="empty-note">No attachments found</div>`}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Tasks</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <button class="sky-btn sky-btn-default"><i class="fa fa-plus"></i> Add Task</button>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <select style="border:1px solid var(--sky-border);border-radius:3px;padding:4px 6px;font-size:12.5px;"><option>Fulfillment</option></select>
+                <label class="chk-label"><input type="checkbox" checked> Show completed</label>
+              </div>
+            </div>
+            <table class="mini-table">
+              <thead><tr><th>Name</th><th>Description</th><th>Assignee</th><th>Date Assigned</th><th>Age</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>test</td><td>test</td><td>All</td><td>-</td><td>-</td><td>Open</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Notes</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <button class="sky-btn sky-btn-default"><i class="fa fa-plus"></i> Add note</button>
+            <div class="empty-note">No notes found.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Approvals</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <div class="empty-note">No approval requests for this instance yet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById("instHome").addEventListener("click", closeInstanceDetail);
+  document.getElementById("instBackArrow").addEventListener("click", ()=> openDetail(opp.id));
+  iv.querySelectorAll("[data-open-opp]").forEach(a=>{
+    a.addEventListener("click", ()=> openDetail(Number(a.dataset.openOpp)));
+  });
+}
+
+function closeInstanceDetail(){
+  document.getElementById("instanceDetailView").classList.add("hidden");
   document.getElementById("tabsView").classList.remove("hidden");
 }
 

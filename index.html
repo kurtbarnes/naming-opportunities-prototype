@@ -55,19 +55,19 @@
     margin-bottom:12px;cursor:pointer;
   }
 
-  .main{flex:1;padding:20px 28px 40px;max-width:1500px;}
+  .main{flex:1;padding:20px 28px 40px;max-width:1600px;}
   .eyebrow{text-align:right;font-size:11px;color:var(--sky-text-dim);margin-bottom:2px;}
   .page-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
-  .page-head h1{font-size:26px;font-weight:600;margin:0;color:var(--sky-text);}
+  .page-head h1{font-size:26px;font-weight:600;margin:0;color:var(--sky-text);display:flex;align-items:center;gap:10px;}
+  .page-head h1 .home-crumb{cursor:pointer;color:var(--sky-text-dim);font-size:20px;}
+  .page-head h1 .home-crumb:hover{color:var(--sky-blue);}
   .head-actions{display:flex;gap:8px;}
 
-  /* ---- app content area (real sky-* + tailwind classes from vendor.css do the heavy lifting) ---- */
+  /* ---- tabs / toolbar / grid (shared look, real sky-* classes) ---- */
   .count-row{display:flex;align-items:center;justify-content:space-between;margin:14px 0 10px;}
   .count-row .count{font-size:14px;color:var(--sky-text);}
 
-  .find-box{
-    display:flex;align-items:center;height:32px;
-  }
+  .find-box{display:flex;align-items:center;height:32px;}
   .find-box input{border:1px solid var(--sky-border);border-right:0;border-radius:3px 0 0 3px;height:32px;padding:0 10px;font-size:13px;outline:0;width:220px;}
   .find-box button{border:1px solid var(--sky-border);border-left:0;border-radius:0 3px 3px 0;height:32px;width:34px;background:#fff;cursor:pointer;color:var(--sky-text-dim);}
   .chk-label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sky-text-dim);white-space:nowrap;}
@@ -79,6 +79,8 @@
     background:#fff;position:sticky;top:0;
   }
   .sky-grid-table thead th:hover{color:var(--sky-blue);}
+  .sky-grid-table thead th.no-sort{cursor:default;}
+  .sky-grid-table thead th.no-sort:hover{color:var(--sky-text-dim);}
   .sky-grid-table thead th .sort-arrow{font-size:10px;margin-left:4px;color:var(--sky-blue);}
   .sky-grid-table td.sky-grid-cell{padding:10px;vertical-align:top;font-size:13px;color:#3a444d;}
   .sky-grid-row:hover{background:#f0f7fb;}
@@ -86,16 +88,21 @@
   .col-check{width:30px;}
   .col-icon{width:30px;text-align:center;}
   .row-icon-btn{
-    background:transparent;border:0;color:#7c8894;cursor:pointer;font-size:13px;padding:4px 6px;border-radius:3px;
+    background:#eef0f2;border:0;color:#7c8894;cursor:pointer;font-size:12px;padding:6px 7px;border-radius:50%;
+    width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;
   }
-  .row-icon-btn:hover{color:var(--sky-blue);background:#eef6fb;}
+  .row-icon-btn:hover{color:var(--sky-blue);background:#dcecf4;}
   .name-link{color:var(--sky-blue);font-weight:600;cursor:pointer;text-decoration:none;}
   .name-link:hover{text-decoration:underline;}
   .loc-path{color:var(--sky-text-dim);font-size:12.5px;line-height:1.4;}
   .num{text-align:left;}
 
-  /* status-box / data-status colors come straight from vendor.css (real production colors) */
   .status-box{font-size:12px;font-weight:600;}
+  .filter-chip{
+    display:inline-flex;align-items:center;gap:6px;background:#eaf3fa;color:var(--sky-blue);
+    border-radius:3px;padding:4px 10px;font-size:12.5px;font-weight:600;
+  }
+  .filter-chip .x{cursor:pointer;font-weight:700;}
 
   .footer-row{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;color:var(--sky-text-dim);font-size:12.5px;}
   .pager{display:flex;gap:4px;align-items:center;}
@@ -107,6 +114,63 @@
   .context-menu-naming li{padding:8px 14px;font-size:13px;cursor:pointer;white-space:nowrap;color:var(--sky-text);}
   .context-menu-naming li:hover{background:#f4f6f8;}
 
+  /* ---- Admin Settings cards ---- */
+  .admin-columns{display:flex;gap:20px;align-items:flex-start;}
+  .admin-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px;}
+  .card{border:1px solid var(--sky-border);border-radius:4px;background:#fff;}
+  .card-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--sky-border);}
+  .card-head h3{margin:0;font-size:15px;font-weight:600;color:var(--sky-text);}
+  .card-head .drag{color:#b7bcc2;cursor:grab;letter-spacing:1px;}
+  .card-body{padding:12px 16px;}
+  .card-body .sky-btn{margin-bottom:10px;}
+  .list-item{
+    display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dotted var(--sky-border);font-size:13px;
+  }
+  .list-item:last-child{border-bottom:0;}
+  .list-item .ellipsis-btn{
+    background:transparent;border:0;color:#9ba3ab;cursor:pointer;font-size:13px;width:20px;
+  }
+  .list-item a{color:var(--sky-blue);cursor:pointer;text-decoration:none;}
+  .list-item a:hover{text-decoration:underline;}
+  .mini-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .mini-table th{text-align:left;font-weight:600;color:var(--sky-text-dim);font-size:12px;padding:6px 4px;border-bottom:1px solid var(--sky-border);}
+  .mini-table td{padding:8px 4px;border-bottom:1px dotted var(--sky-border);vertical-align:top;}
+  .mini-table tr:last-child td{border-bottom:0;}
+  .checkbox-yes{color:#3a9c53;}
+
+  /* ---- Dashboard ---- */
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px 60px;padding:20px 4px 28px;}
+  .stat-tile{text-align:center;}
+  .stat-tile .stat-num{font-size:30px;font-weight:600;color:var(--sky-text);}
+  .stat-tile .stat-num.green{color:#2f9e44;}
+  .stat-tile .stat-num.red{color:#e03131;}
+  .stat-tile .stat-label{font-size:13px;color:var(--sky-text-dim);margin-top:2px;}
+  .approval-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px dotted var(--sky-border);}
+  .approval-row:last-child{border-bottom:0;}
+  .approval-row .a-title{color:var(--sky-blue);font-weight:600;text-decoration:none;cursor:pointer;}
+  .approval-row .a-sub{font-size:12.5px;color:var(--sky-text-dim);margin-top:2px;}
+  .section-label{font-weight:600;font-size:15px;margin:22px 0 8px;color:var(--sky-text);}
+
+  /* ---- Detail view ---- */
+  .detail-summary{font-size:13px;color:var(--sky-text);line-height:1.9;margin-bottom:14px;}
+  .detail-summary b{font-weight:600;}
+  .detail-columns{display:flex;gap:20px;align-items:flex-start;}
+  .detail-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px;}
+  .kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;font-size:13px;}
+  .kv-row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dotted var(--sky-border);}
+  .kv-row .k{color:var(--sky-text-dim);}
+  .kv-row .v{font-weight:500;text-align:right;}
+  .kv-row .v a{color:var(--sky-blue);text-decoration:none;}
+  .kv-row .v.muted{color:#9aa0a6;font-style:italic;font-weight:400;}
+  .empty-note{color:var(--sky-text-dim);font-size:13px;text-align:center;padding:20px 0;}
+  .instance-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px dotted var(--sky-border);}
+  .instance-row:last-child{border-bottom:0;}
+  .instance-row .i-left{display:flex;align-items:center;gap:10px;}
+  .instance-row a{color:var(--sky-blue);text-decoration:none;cursor:pointer;}
+  .instance-row a:hover{text-decoration:underline;}
+  .badge-num{background:#eef0f2;border-radius:3px;padding:2px 7px;font-size:12px;color:var(--sky-text-dim);}
+
+  /* ---- Drawer ---- */
   .overlay{position:fixed;inset:0;background:rgba(20,30,38,.35);display:none;z-index:50;}
   .overlay.open{display:block;}
   .drawer{
@@ -140,6 +204,7 @@
     border-radius:4px;font-size:13px;opacity:0;transform:translateY(8px);transition:all .2s ease;z-index:60;
   }
   .toast.show{opacity:1;transform:translateY(0);}
+  .hidden{display:none !important;}
 </style>
 </head>
 <body>
@@ -174,76 +239,85 @@
 
   <div class="main">
     <div class="eyebrow">SKY Developer Cohort</div>
-    <div class="page-head">
-      <h1>Naming Opportunities</h1>
-      <div class="head-actions">
-        <button class="sky-btn sky-btn-default">Objects</button>
-        <button class="sky-btn sky-btn-default">Instances</button>
-      </div>
-    </div>
 
-    <!-- real sky-tabset markup -->
-    <div class="sky-tabset sky-tabset-mode-tabs sky-tabset-style-tabs">
-      <span class="sky-tabset-tabs">
-        <div class="sky-btn-tab-wrapper"><button class="sky-btn-tab">Admin Settings</button></div>
-        <div class="sky-btn-tab-wrapper"><button class="sky-btn-tab sky-btn-tab-selected">Naming Opportunity List</button></div>
-        <div class="sky-btn-tab-wrapper"><button class="sky-btn-tab">Instance List</button></div>
-        <div class="sky-btn-tab-wrapper"><button class="sky-btn-tab">Dashboard</button></div>
-      </span>
-    </div>
-
-    <div class="count-row">
-      <div class="count"><span id="rowCount">0</span> Naming Opportunities</div>
-    </div>
-
-    <!-- real sky-toolbar markup -->
-    <div class="sky-toolbar-section">
-      <div class="sky-toolbar-section-items">
-        <div class="sky-toolbar-item">
-          <button class="sky-btn new-fund-btn sky-btn-primary" id="newBtn" data-sky-id="event-add">
-            <i class="fa fa-plus-circle"></i> New naming opportunity
-          </button>
+    <!-- ================= LIST-TABS VIEW ================= -->
+    <div id="tabsView">
+      <div class="page-head">
+        <h1>Naming Opportunities</h1>
+        <div class="head-actions">
+          <button class="sky-btn sky-btn-default">Objects</button>
+          <button class="sky-btn sky-btn-default">Instances</button>
         </div>
-        <div class="sky-toolbar-item">
-          <div class="disp-flex padtop10 padbot10 searchparticipantscontainer">
-            <input type="text" id="findInput" placeholder="Find in this list">
-            <button id="findGoBtn"><i class="fa fa-search"></i></button>
+      </div>
+
+      <div class="sky-tabset sky-tabset-mode-tabs sky-tabset-style-tabs">
+        <span class="sky-tabset-tabs" id="tabStrip">
+          <div class="sky-btn-tab-wrapper"><button class="sky-btn-tab" data-tab="admin">Admin Settings</button></div>
+          <div class="sky-btn-tab-wrapper"><button class="sky-btn-tab" data-tab="list">Naming Opportunity List</button></div>
+          <div class="sky-btn-tab-wrapper"><button class="sky-btn-tab" data-tab="instances">Instance List</button></div>
+          <div class="sky-btn-tab-wrapper"><button class="sky-btn-tab" data-tab="dashboard">Dashboard</button></div>
+        </span>
+      </div>
+
+      <!-- ---- Naming Opportunity List panel ---- -->
+      <div id="panel-list" class="tab-panel">
+        <div class="count-row"><div class="count"><span id="rowCount">0</span> Naming Opportunities</div></div>
+        <div class="sky-toolbar-section">
+          <div class="sky-toolbar-section-items">
+            <div class="sky-toolbar-item">
+              <button class="sky-btn new-fund-btn sky-btn-primary" id="newBtn" data-sky-id="event-add">
+                <i class="fa fa-plus-circle"></i> New naming opportunity
+              </button>
+            </div>
+            <div class="sky-toolbar-item">
+              <div class="disp-flex padtop10 padbot10 searchparticipantscontainer">
+                <input type="text" id="findInput" placeholder="Find in this list">
+                <button id="findGoBtn"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+            <div class="sky-toolbar-item">
+              <label class="chk-label"><input type="checkbox" id="includeInactive"> Include inactive</label>
+            </div>
+            <div class="sky-toolbar-item">
+              <button class="sky-btn sky-btn-default" id="filterBtn"><i class="fa fa-filter"></i> Filter</button>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+          <div class="sky-toolbar-section-items">
+            <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default"><i class="fa fa-arrow-up"></i> Export</button></div>
+            <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default" id="resetBtn"><i class="fa fa-refresh"></i> Reset</button></div>
+            <div class="sky-toolbar-item" style="position:relative;">
+              <button class="sky-btn sky-btn-default" id="columnsBtn"><i class="fa fa-bars"></i> Columns</button>
+              <div class="columns-pop" id="columnsPop"></div>
+            </div>
           </div>
         </div>
-        <div class="sky-toolbar-item">
-          <label class="chk-label"><input type="checkbox" id="includeInactive"> Include inactive</label>
+        <div class="table-wrap sky-grid">
+          <div class="sky-grid-table-container">
+            <table class="sky-grid-table w-full">
+              <thead><tr id="headRow"></tr></thead>
+              <tbody class="sky-grid-tbody" id="tbody"></tbody>
+            </table>
+          </div>
         </div>
-        <div class="sky-toolbar-item">
-          <button class="sky-btn sky-btn-default" id="filterBtn"><i class="fa fa-filter"></i> Filter</button>
-        </div>
-      </div>
-      <div style="flex:1"></div>
-      <div class="sky-toolbar-section-items">
-        <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default"><i class="fa fa-arrow-up"></i> Export</button></div>
-        <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default" id="resetBtn"><i class="fa fa-refresh"></i> Reset</button></div>
-        <div class="sky-toolbar-item" style="position:relative;">
-          <button class="sky-btn sky-btn-default" id="columnsBtn"><i class="fa fa-bars"></i> Columns</button>
-          <div class="columns-pop" id="columnsPop"></div>
+        <div class="footer-row">
+          <div id="footerCount"></div>
+          <div class="pager" id="pager"></div>
         </div>
       </div>
+
+      <!-- ---- Admin Settings panel ---- -->
+      <div id="panel-admin" class="tab-panel hidden" style="padding-top:16px;"></div>
+
+      <!-- ---- Instance List panel ---- -->
+      <div id="panel-instances" class="tab-panel hidden"></div>
+
+      <!-- ---- Dashboard panel ---- -->
+      <div id="panel-dashboard" class="tab-panel hidden"></div>
     </div>
 
-    <!-- real sky-grid markup -->
-    <div class="table-wrap sky-grid">
-      <div class="sky-grid-table-container">
-        <table class="sky-grid-table w-full">
-          <thead>
-            <tr id="headRow"></tr>
-          </thead>
-          <tbody class="sky-grid-tbody" id="tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="footer-row">
-      <div id="footerCount"></div>
-      <div class="pager" id="pager"></div>
-    </div>
+    <!-- ================= RECORD DETAIL VIEW ================= -->
+    <div id="detailView" class="hidden"></div>
   </div>
 </div>
 
@@ -264,6 +338,7 @@
     <div class="field"><label class="sky-control-label"><span>Status</span></label>
       <select id="f-status"><option>Available</option><option>Assigned</option><option>Proposed</option><option>Inactive</option></select>
     </div>
+    <div class="field"><label class="sky-control-label"><span>Ask Amount</span></label><input id="f-ask" type="number"></div>
     <div class="field"><label class="sky-control-label"><span>Quantity</span></label><input id="f-qty" type="number" value="1"></div>
   </div>
   <div class="drawer-foot">
@@ -275,9 +350,14 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ---------------- Sample data ---------------- */
+/* =====================================================================
+   Sample data — all fictional. Structure mirrors the real production app.
+   ===================================================================== */
 const TYPES = ["Internal","General","Outdoor"];
 const DEPTS = ["Orthopedics","General","Cardiac","Oncology","Neurology","Pediatrics"];
+const FUNDS = ["Natural Disaster Relief Fund","Building Fund","Acquisition Fund","Endowment Fund"];
+const CAMPAIGNS = ["Planned Giving Campaign","Capital Campaign","Endowment Campaign"];
+const PEOPLE = ["Jordan Lee","Taylor Kim","Morgan Patel","Casey Nguyen","Sam Rivera","Riley Cooper","Alex Chen","Jamie Torres","Drew Bennett"];
 const NAME_POOL = [
   ["Patient Rm"],["Group Study Room"],["Staff Lounge"],
   ["Instructional and Research Consultation Room"],["Associate Director of Library Services Offices"],
@@ -290,7 +370,7 @@ const LOC_PATHS = [
   "Campus > Main Building > 2nd Floor",
   "Example Medical Center > FLOOR 8"
 ];
-const STATUSES = ["Assigned","Available","Available","Proposed"]; // weighted toward Available like the live data
+const STATUSES = ["Assigned","Available","Available","Proposed"];
 
 function makeRow(i){
   const [base] = NAME_POOL[i % NAME_POOL.length];
@@ -298,6 +378,7 @@ function makeRow(i){
   const isRoom = base.includes("Rm") || base.includes("Room");
   const name = isRoom ? `${base} ${num}` : base;
   const status = STATUSES[i % STATUSES.length];
+  const qty = 1;
   return {
     id: i+1,
     name,
@@ -306,8 +387,12 @@ function makeRow(i){
     type: TYPES[i % TYPES.length],
     dept: DEPTS[i % DEPTS.length],
     status,
-    qty: 1,
-    available: status === "Assigned" ? 0 : 1
+    qty,
+    available: status === "Assigned" ? 0 : qty,
+    askAmount: [10000,15000,50000,75000,500000][i % 5],
+    fund: FUNDS[i % FUNDS.length],
+    campaign: CAMPAIGNS[i % CAMPAIGNS.length],
+    assignedInstance: status === "Assigned" ? `${PEOPLE[i % PEOPLE.length]} - ${name}` : null
   };
 }
 
@@ -319,6 +404,7 @@ const COLUMNS = [
   {key:"loc", label:"Location"},
   {key:"type", label:"Type"},
   {key:"dept", label:"Specialty/Department"},
+  {key:"askAmount", label:"Ask Amount"},
   {key:"status", label:"Status"},
   {key:"qty", label:"Quantity"},
   {key:"available", label:"Available"},
@@ -331,7 +417,14 @@ let page = 1;
 const PAGE_SIZE = 12;
 let editingId = null;
 let openMenuId = null;
+let currentTab = "list";
+let detailId = null;
 
+function money(n){ return "$" + n.toLocaleString(); }
+
+/* =====================================================================
+   Naming Opportunity List
+   ===================================================================== */
 function filteredData(){
   let rows = DATA;
   if(searchTerm.trim()){
@@ -351,7 +444,7 @@ function filteredData(){
 function renderHead(){
   const head = document.getElementById("headRow");
   let html = `<th class="col-check"><input type="checkbox" id="selectAll"></th>
-              <th class="col-icon"></th><th class="col-icon"></th>`;
+              <th class="col-icon"></th><th class="col-icon"></th><th class="col-icon"></th><th class="col-icon"></th>`;
   COLUMNS.forEach(c=>{
     if(!visibleCols.has(c.key)) return;
     let arrow = "";
@@ -392,6 +485,8 @@ function renderBody(){
         cells += `<td class="sky-grid-cell loc-path">${r.loc}</td>`;
       } else if(c.key === "status"){
         cells += `<td class="sky-grid-cell">${statusBox(r.status)}</td>`;
+      } else if(c.key === "askAmount"){
+        cells += `<td class="sky-grid-cell num">${money(r.askAmount)}</td>`;
       } else if(c.key === "qty" || c.key === "available"){
         cells += `<td class="sky-grid-cell num">${r[c.key]}</td>`;
       } else {
@@ -401,57 +496,24 @@ function renderBody(){
     return `<tr class="sky-grid-row" data-id="${r.id}">
       <td class="sky-grid-cell col-check"><input type="checkbox" class="row-select" data-id="${r.id}"></td>
       <td class="sky-grid-cell col-icon"><button class="row-icon-btn edit-icon" data-id="${r.id}" title="Edit"><i class="fa fa-pencil"></i></button></td>
-      <td class="sky-grid-cell col-icon" style="position:relative;">
-        <button class="row-icon-btn menu-icon" data-id="${r.id}" aria-label="context menu" aria-haspopup="menu"><i class="fa fa-ellipsis-h"></i></button>
-      </td>
+      <td class="sky-grid-cell col-icon"><button class="row-icon-btn" title="Remove"><i class="fa fa-times-circle"></i></button></td>
+      <td class="sky-grid-cell col-icon"><button class="row-icon-btn" title="Assign"><i class="fa fa-user-plus"></i></button></td>
+      <td class="sky-grid-cell col-icon"><button class="row-icon-btn" title="Notes"><i class="fa fa-file-text"></i></button></td>
       ${cells}
     </tr>`;
   }).join("");
 
-  tbody.querySelectorAll(".name-link, .edit-icon").forEach(el=>{
-    el.addEventListener("click", ()=> openDrawer(Number(el.dataset.id)));
+  tbody.querySelectorAll(".name-link").forEach(el=>{
+    el.addEventListener("click", ()=> openDetail(Number(el.dataset.id)));
   });
-  tbody.querySelectorAll(".menu-icon").forEach(el=>{
-    el.addEventListener("click", (e)=>{
-      e.stopPropagation();
-      const id = Number(el.dataset.id);
-      openMenuId = openMenuId === id ? null : id;
-      renderBody();
-    });
+  tbody.querySelectorAll(".edit-icon").forEach(el=>{
+    el.addEventListener("click", ()=> openDrawer(Number(el.dataset.id)));
   });
   tbody.querySelectorAll(".row-select").forEach(cb=>{
     cb.addEventListener("change", ()=>{
       cb.closest("tr").classList.toggle("selected", cb.checked);
     });
   });
-
-  if(openMenuId){
-    const btn = tbody.querySelector(`.menu-icon[data-id="${openMenuId}"]`);
-    if(btn){
-      const menu = document.createElement("div");
-      menu.className = "context-menu-naming shadow-md bg-white border border-gray-200";
-      menu.style.position = "absolute";
-      menu.style.top = "28px";
-      menu.style.right = "0";
-      menu.style.zIndex = "1000";
-      menu.style.minWidth = "150px";
-      menu.innerHTML = `<ul>
-        <li data-action="edit">Edit</li>
-        <li data-action="assign">Assign / Unassign</li>
-        <li data-action="history">View History</li>
-        <li data-action="delete">Delete</li>
-      </ul>`;
-      btn.parentElement.appendChild(menu);
-      menu.querySelectorAll("li").forEach(li=>{
-        li.addEventListener("click", ()=>{
-          if(li.dataset.action === "edit") openDrawer(openMenuId);
-          else showToast(li.textContent + " — placeholder");
-          openMenuId = null;
-          renderBody();
-        });
-      });
-    }
-  }
 
   const total = rows.length;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -493,6 +555,416 @@ function renderAll(){
   renderBody();
 }
 
+/* =====================================================================
+   Admin Settings
+   ===================================================================== */
+function listCard(title, items, opts){
+  opts = opts || {};
+  return `<div class="card">
+    <div class="card-head"><h3>${title}</h3><span class="drag">&#8942;&#8942;</span></div>
+    <div class="card-body">
+      <button class="sky-btn sky-btn-default"><i class="fa fa-plus"></i> Add</button>
+      ${opts.extraBtn || ""}
+      ${opts.showInactive ? `<label class="chk-label" style="float:right;margin-top:8px;"><input type="checkbox"> Show Inactive</label>` : ""}
+      <div style="clear:both;"></div>
+      ${items.map(t => `<div class="list-item"><button class="ellipsis-btn"><i class="fa fa-ellipsis-h"></i></button><a>${t}</a></div>`).join("")}
+    </div>
+  </div>`;
+}
+
+function tableCard(title, headers, rows){
+  return `<div class="card">
+    <div class="card-head"><h3>${title}</h3><span class="drag">&#8942;&#8942;</span></div>
+    <div class="card-body">
+      <button class="sky-btn sky-btn-default"><i class="fa fa-plus"></i> Add</button>
+      <table class="mini-table" style="margin-top:10px;">
+        <thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead>
+        <tbody>
+          ${rows.map(r => `<tr><td style="width:26px;"><i class="fa fa-ellipsis-h" style="color:#9ba3ab;"></i></td>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function renderAdmin(){
+  const el = document.getElementById("panel-admin");
+  const leftCol = [
+    listCard("Locations", [
+      "Example Medical Center &gt; Event Sponsorships",
+      "Example Medical Center &gt; Trucks",
+      "Example Medical Center &gt; Capital Assets",
+      "Example Medical Center &gt; Other Fundable"
+    ], {extraBtn:`<button class="sky-btn sky-btn-default" style="margin-left:8px;"><i class="fa fa-plus"></i> Add Event</button>`, showInactive:true}),
+    listCard("Specialty/Departments", DEPTS.slice(0,4).concat(["Business","Law/Philosophy"])),
+    tableCard("Engraving Options", ["Name","Description","Size","Amount","Lines"], [
+      ["test","demo","","","2"],
+      ["8&quot; x 8&quot;","Grey Patio Paver - 8&quot; x 8&quot;","8&quot;x8&quot;","$550","4"],
+      ['4"x8" Brick','4"x8" Brick - 2 Lines','4"x8"','$250','2'],
+      ['8"x8" Paver','8"x8" Paver - 4 Lines','8"x8"','$750','4']
+    ]),
+    tableCard("Action Lists", ["Name","Description","Type"], [
+      ["Objects requiring record updates","Objects requiring record updates","Object"],
+      ["Repairs Needed","Instances with broken signs","Instance"]
+    ]),
+    tableCard("Email Alerts", ["Subject Line","Description","Type"], [
+      ["Naming Opportunities - Tasks Assign...","demo","Task Assignment"],
+      ["Action Required - Naming Opportuni...","add","Status Change to Inactive"],
+      ["Naming Opportunity Instances Expiri...","test","Expiration Notice"]
+    ]),
+    tableCard("Security Permissions", ["User","Role"], [
+      ["Jordan Lee","Is Administrator"],
+      ["Sam Rivera","Is Module Access, Is Adm..."],
+      ["Alex Chen","Is Administrator"],
+      ["Morgan Patel","Is Module View Only"]
+    ])
+  ];
+  const rightCol = [
+    listCard("Types", ["Building","Outdoor","Student Use Only","General"]),
+    tableCard("Workflow Templates", ["Name","Description","Type"], [
+      ["Removal Step Templates","Generic workflow for Naming Object Removal","Removal"],
+      ["Bricks Fulfillment","Fulfillment workflow for new memorial bricks","Fulfillment"],
+      ["Building Sign Fulfillment","Fulfillment workflow for new building signs.","Fulfillment"]
+    ]),
+    tableCard("Custom fields", ["Label","Field Type","Form Type","Default Value","Required"], [
+      ["Low Ask Amount","currency","object","<i>No default value</i>","No"],
+      ["Ask amount","currency","object","<i>No default value</i>","No"],
+      ["currency2","currency","instance","<i>No default value</i>","No"],
+      ["Custom Field Example","select","instance","Delete","No"]
+    ])
+  ];
+  el.innerHTML = `<div class="admin-columns">
+    <div class="admin-col">${leftCol.join("")}</div>
+    <div class="admin-col">${rightCol.join("")}</div>
+  </div>`;
+}
+
+/* =====================================================================
+   Instance List
+   ===================================================================== */
+const INSTANCE_STATUSES = ["Assigned","Proposed","Inactive (Canceled)","Inactive (Unavailable)","Proposal Draft - Pending Approval"];
+function makeInstance(i){
+  const opp = DATA[i % DATA.length];
+  const person = PEOPLE[i % PEOPLE.length];
+  const status = INSTANCE_STATUSES[i % INSTANCE_STATUSES.length];
+  return {
+    id: i+1,
+    name: `${person} - ${opp.name}`,
+    constituent: person,
+    opportunity: opp.name,
+    dedication: "-",
+    startDate: i % 3 === 0 ? "2025-08-22" : "-",
+    endDate: i % 4 === 0 ? "2026-08-07" : "-",
+    amount: i % 6 === 0 ? "$" + (15 * (i%9+1)) : "-",
+    campaign: i % 2 === 0 ? CAMPAIGNS[i % CAMPAIGNS.length] : "-",
+    fund: i % 2 === 0 ? FUNDS[i % FUNDS.length] : "-",
+    status,
+    dateProposed: i % 3 === 0 ? "2026-05-05" : "-",
+    qty: 1
+  };
+}
+let INSTANCES = Array.from({length: 42}, (_,i)=> makeInstance(i));
+
+function renderInstances(){
+  const el = document.getElementById("panel-instances");
+  el.innerHTML = `
+    <div class="count-row"><div class="count">${INSTANCES.length} Instances</div></div>
+    <div class="sky-toolbar-section">
+      <div class="sky-toolbar-section-items">
+        <div class="sky-toolbar-item">
+          <div class="disp-flex padtop10 padbot10 searchparticipantscontainer">
+            <input type="text" id="instFindInput" placeholder="Find in this list">
+            <button><i class="fa fa-search"></i></button>
+          </div>
+        </div>
+        <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default"><i class="fa fa-filter"></i> Filter</button></div>
+      </div>
+      <div style="flex:1"></div>
+      <div class="sky-toolbar-section-items">
+        <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default"><i class="fa fa-arrow-up"></i> Export</button></div>
+        <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default"><i class="fa fa-refresh"></i> Reset</button></div>
+        <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default"><i class="fa fa-bars"></i> Columns</button></div>
+      </div>
+    </div>
+    <div class="table-wrap sky-grid">
+      <div class="sky-grid-table-container">
+        <table class="sky-grid-table w-full">
+          <thead><tr>
+            <th class="col-check"><input type="checkbox"></th>
+            <th class="col-icon"></th><th class="col-icon"></th>
+            <th>Name</th><th>Primary Constituent</th><th>Naming Opportunity</th><th>Dedication</th>
+            <th>Start Date</th><th>End Date</th><th>Instance Amount</th><th>Related Campaign</th>
+            <th>Related Fund</th><th>Status</th><th>Date Proposed</th><th>Quantity</th>
+          </tr></thead>
+          <tbody class="sky-grid-tbody">
+            ${INSTANCES.map(r => `<tr class="sky-grid-row">
+              <td class="sky-grid-cell col-check"><input type="checkbox"></td>
+              <td class="sky-grid-cell col-icon"><button class="row-icon-btn" title="Edit"><i class="fa fa-pencil"></i></button></td>
+              <td class="sky-grid-cell col-icon"><button class="row-icon-btn" title="Remove"><i class="fa fa-times-circle"></i></button></td>
+              <td class="sky-grid-cell"><a class="name-link">${r.name}</a></td>
+              <td class="sky-grid-cell">${r.constituent}</td>
+              <td class="sky-grid-cell"><a class="name-link" data-goto="${r.id}">${r.opportunity}</a></td>
+              <td class="sky-grid-cell">${r.dedication}</td>
+              <td class="sky-grid-cell">${r.startDate}</td>
+              <td class="sky-grid-cell">${r.endDate}</td>
+              <td class="sky-grid-cell">${r.amount}</td>
+              <td class="sky-grid-cell">${r.campaign}</td>
+              <td class="sky-grid-cell">${r.fund}</td>
+              <td class="sky-grid-cell">${statusBox(r.status)}</td>
+              <td class="sky-grid-cell">${r.dateProposed}</td>
+              <td class="sky-grid-cell num">${r.qty}</td>
+            </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="footer-row"><div>Showing 1-${INSTANCES.length} of ${INSTANCES.length}</div></div>
+  `;
+  el.querySelectorAll("[data-goto]").forEach(a=>{
+    a.addEventListener("click", ()=>{
+      const idx = Number(a.dataset.goto) % DATA.length;
+      openDetail(DATA[idx].id);
+    });
+  });
+}
+
+/* =====================================================================
+   Dashboard
+   ===================================================================== */
+const APPROVALS = [
+  {title:"Sample Proposal", sub:"Create Naming Opportunity Proposal — requested by demo@example.com"},
+  {title:"New Wing Naming", sub:"Create Naming Opportunity Proposal — requested by jordan.lee@example.com"},
+  {title:"Riverside Sponsor Sign", sub:"Create Naming Opportunity Proposal — requested by Taylor Kim"}
+];
+const TASKS = [
+  {name:"Install Brick", desc:"Confirm brick receipt and accuracy. Install Brick.", status:"Open", type:"Fulfillment", assignee:"All", instance:"Jordan Lee - Memorial Bricks", opp:"Memorial Bricks", date:"-"},
+  {name:"Install Brick", desc:"Confirm brick receipt and accuracy. Install Brick.", status:"Open", type:"Fulfillment", assignee:"Sam Rivera", instance:"Taylor Kim - Memorial Brick", opp:"Memorial Bricks", date:"2026-03-22"},
+  {name:"Install Brick", desc:"Confirm brick receipt and accuracy. Install Brick.", status:"Open", type:"Fulfillment", assignee:"All", instance:"Morgan Patel - Memorial Bricks", opp:"Memorial Bricks", date:"-"},
+  {name:"Place Order for Engraving", desc:"Confirm engraving language and order brick", status:"Open", type:"Fulfillment", assignee:"All", instance:"Casey Nguyen - Memorial Bricks", opp:"Memorial Bricks", date:"2026-07-01"},
+  {name:"Place Order for Engraving", desc:"Confirm engraving language and order brick", status:"Open", type:"Fulfillment", assignee:"All", instance:"Riley Cooper - Memorial Bricks", opp:"Memorial Bricks", date:"2026-07-01"}
+];
+
+function renderDashboard(){
+  const el = document.getElementById("panel-dashboard");
+  el.innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-tile"><div class="stat-num">435</div><div class="stat-label">Naming Opportunity Objects</div></div>
+      <div class="stat-tile"><div class="stat-num green">$10.07M</div><div class="stat-label">Ask amount for available naming opportunities</div></div>
+      <div class="stat-tile"><div class="stat-num">22</div><div class="stat-label">Naming Opportunity Instances Assigned</div></div>
+      <div class="stat-tile"><div class="stat-num red">561</div><div class="stat-label">Number of Available Naming Opportunities</div></div>
+    </div>
+    <div class="section-label">Approvals:</div>
+    <div class="card">
+      ${APPROVALS.map(a => `<div class="approval-row">
+        <div><a class="a-title">${a.title}</a><div class="a-sub">${a.sub}</div></div>
+        <button class="sky-btn sky-btn-default">Review Request</button>
+      </div>`).join("")}
+    </div>
+    <div class="section-label">Manage Tasks:</div>
+    <div class="sky-toolbar-section" style="padding-left:0;">
+      <div class="sky-toolbar-section-items">
+        <div class="sky-toolbar-item">
+          <div class="disp-flex padtop10 padbot10 searchparticipantscontainer">
+            <input type="text" placeholder="Find in this list">
+            <button><i class="fa fa-search"></i></button>
+          </div>
+        </div>
+        <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default"><i class="fa fa-filter"></i> Filter</button></div>
+      </div>
+      <div style="flex:1"></div>
+      <div class="sky-toolbar-section-items">
+        <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default"><i class="fa fa-arrow-up"></i> Export</button></div>
+        <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default"><i class="fa fa-refresh"></i> Reset</button></div>
+        <div class="sky-toolbar-item"><button class="sky-btn sky-btn-default"><i class="fa fa-bars"></i> Columns</button></div>
+      </div>
+    </div>
+    <div style="margin:8px 0;"><span class="filter-chip">Status: Open <span class="x">&times;</span></span></div>
+    <div class="table-wrap sky-grid">
+      <div class="sky-grid-table-container">
+        <table class="sky-grid-table w-full">
+          <thead><tr>
+            <th class="col-check"><input type="checkbox"></th>
+            <th>Name</th><th>Description</th><th>Status</th><th>Type</th><th>Assignee</th>
+            <th>Instance Name</th><th>Opportunity</th><th>Date Assigned</th>
+          </tr></thead>
+          <tbody class="sky-grid-tbody">
+            ${TASKS.map(t => `<tr class="sky-grid-row">
+              <td class="sky-grid-cell col-check"><input type="checkbox"></td>
+              <td class="sky-grid-cell"><a class="name-link">${t.name}</a></td>
+              <td class="sky-grid-cell">${t.desc}</td>
+              <td class="sky-grid-cell">${t.status}</td>
+              <td class="sky-grid-cell">${t.type}</td>
+              <td class="sky-grid-cell">${t.assignee}</td>
+              <td class="sky-grid-cell"><a class="name-link">${t.instance}</a></td>
+              <td class="sky-grid-cell"><a class="name-link">${t.opp}</a></td>
+              <td class="sky-grid-cell">${t.date}</td>
+            </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+/* =====================================================================
+   Record Detail view
+   ===================================================================== */
+function kvRow(k, v, opts){
+  opts = opts || {};
+  const cls = opts.muted ? "v muted" : "v";
+  return `<div class="kv-row"><span class="k">${k}</span><span class="${cls}">${v}</span></div>`;
+}
+
+function openDetail(id){
+  detailId = id;
+  const r = DATA.find(d => d.id === id);
+  const tv = document.getElementById("tabsView");
+  const dv = document.getElementById("detailView");
+  tv.classList.add("hidden");
+  dv.classList.remove("hidden");
+
+  const leftKV = [
+    kvRow("Specialty / Department", r.dept),
+    kvRow("Quantity", r.qty),
+    kvRow("Fund", `<a>${r.fund}</a>`),
+    kvRow("Ask Amount", money(r.askAmount)),
+    kvRow("Latitude", "No information found", {muted:true}),
+    kvRow("Speciality", "None", {muted:true}),
+    kvRow("Fulfillment Template", "No information found", {muted:true}),
+    kvRow("Comments", "No information found", {muted:true}),
+  ].join("");
+  const rightKV = [
+    kvRow("Status", r.status),
+    kvRow("Available", r.available),
+    kvRow("Campaign", `<a>${r.campaign}</a>`),
+    kvRow("Square footage", "No information found", {muted:true}),
+    kvRow("Longitude", "No information found", {muted:true}),
+    kvRow("Custom Field", r.id % 2 === 0 ? "Yes" : "No"),
+    kvRow("Removal Template", "No information found", {muted:true}),
+  ].join("");
+
+  const instancesHtml = r.assignedInstance
+    ? `<div class="instance-row"><div class="i-left"><button class="ellipsis-btn" style="background:none;border:0;color:#9ba3ab;"><i class="fa fa-ellipsis-h"></i></button><a>${r.assignedInstance}</a></div><div>${statusBox(r.status)} <i class="fa fa-chevron-down" style="color:#9ba3ab;margin-left:6px;"></i></div></div>`
+    : `<div class="empty-note">No instances found</div>`;
+
+  dv.innerHTML = `
+    <div class="page-head">
+      <h1><span class="home-crumb" id="backToList" title="Back to list">&#8962;</span> ${r.name}</h1>
+    </div>
+    <div style="margin-bottom:14px;">${statusBox(r.status)}</div>
+    <div class="detail-summary">
+      <b>Description:</b> ${r.desc}<br>
+      <b>Type:</b> ${r.type}<br>
+      <b>Location:</b> ${r.loc}
+    </div>
+    <button class="sky-btn sky-btn-default" style="margin-bottom:20px;"><i class="fa fa-pencil"></i> Edit naming opportunity</button>
+
+    <div class="detail-columns">
+      <div class="detail-col">
+        <div class="card">
+          <div class="card-head"><h3>Details</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <div class="kv-grid">
+              <div>${leftKV}</div>
+              <div>${rightKV}</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Engraving Options</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <button class="sky-btn sky-btn-default"><i class="fa fa-plus"></i> Add</button>
+            <div class="empty-note">No data found</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Pictures</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <div style="font-size:13px;margin-bottom:8px;">Add Picture (0/3)</div>
+            <input type="file" disabled style="font-size:12px;">
+            <div class="empty-note">No pictures uploaded</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-col">
+        <div class="card">
+          <div class="card-head"><h3>Naming Opportunity Instances</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <span class="badge-num">${r.assignedInstance ? 1 : 0} Opportunity</span>
+            <div style="margin:10px 0;display:flex;align-items:center;justify-content:space-between;">
+              <button class="sky-btn sky-btn-default"><i class="fa fa-plus"></i> Add opportunity instance</button>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--sky-text-dim);">
+                <label class="chk-label"><input type="checkbox"> Include inactive</label>
+                <select style="border:1px solid var(--sky-border);border-radius:3px;padding:4px 6px;font-size:12.5px;"><option>Any status</option></select>
+              </div>
+            </div>
+            ${instancesHtml}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Attachments</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <button class="sky-btn sky-btn-default"><i class="fa fa-plus"></i> Add</button>
+            <div class="empty-note">No attachments found</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Notes</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <button class="sky-btn sky-btn-default"><i class="fa fa-plus"></i> Add note</button>
+            <div class="empty-note">No notes found.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Tasks</h3><span class="drag">&#8942;&#8942;</span></div>
+          <div class="card-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <button class="sky-btn sky-btn-default"><i class="fa fa-plus"></i> Add Task</button>
+              <label class="chk-label"><input type="checkbox" checked> Show completed</label>
+            </div>
+            <table class="mini-table">
+              <thead><tr><th>Name</th><th>Description</th><th>Assignee</th><th>Date Assigned</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>test3</td><td>test3</td><td>All</td><td>2026-07-12</td><td>Open</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById("backToList").addEventListener("click", closeDetail);
+}
+
+function closeDetail(){
+  detailId = null;
+  document.getElementById("detailView").classList.add("hidden");
+  document.getElementById("tabsView").classList.remove("hidden");
+}
+
+/* =====================================================================
+   Tabs
+   ===================================================================== */
+function switchTab(tab){
+  currentTab = tab;
+  document.querySelectorAll(".sky-btn-tab").forEach(b=>{
+    b.classList.toggle("sky-btn-tab-selected", b.dataset.tab === tab);
+  });
+  ["list","admin","instances","dashboard"].forEach(t=>{
+    document.getElementById("panel-"+t).classList.toggle("hidden", t !== tab);
+  });
+  if(tab === "admin") renderAdmin();
+  if(tab === "instances") renderInstances();
+  if(tab === "dashboard") renderDashboard();
+}
+document.getElementById("tabStrip").querySelectorAll(".sky-btn-tab").forEach(b=>{
+  b.addEventListener("click", ()=> switchTab(b.dataset.tab));
+});
+
+/* =====================================================================
+   Drawer (new / edit)
+   ===================================================================== */
 function showToast(msg){
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -514,10 +986,11 @@ function openDrawer(id){
     document.getElementById("f-type").value = r.type;
     document.getElementById("f-dept").value = r.dept;
     document.getElementById("f-status").value = r.status;
+    document.getElementById("f-ask").value = r.askAmount;
     document.getElementById("f-qty").value = r.qty;
   } else {
     title.textContent = "New naming opportunity";
-    ["f-name","f-desc","f-loc","f-dept"].forEach(id=>document.getElementById(id).value = "");
+    ["f-name","f-desc","f-loc","f-dept","f-ask"].forEach(id=>document.getElementById(id).value = "");
     document.getElementById("f-type").value = "Internal";
     document.getElementById("f-status").value = "Available";
     document.getElementById("f-qty").value = 1;
@@ -535,7 +1008,6 @@ document.getElementById("newBtn").addEventListener("click", ()=> openDrawer(null
 document.getElementById("drawerClose").addEventListener("click", closeDrawer);
 document.getElementById("cancelBtn").addEventListener("click", closeDrawer);
 document.getElementById("overlay").addEventListener("click", closeDrawer);
-document.addEventListener("click", ()=>{ if(openMenuId){ openMenuId = null; renderBody(); } });
 
 document.getElementById("saveBtn").addEventListener("click", ()=>{
   const vals = {
@@ -545,6 +1017,7 @@ document.getElementById("saveBtn").addEventListener("click", ()=>{
     type: document.getElementById("f-type").value,
     dept: document.getElementById("f-dept").value,
     status: document.getElementById("f-status").value,
+    askAmount: Number(document.getElementById("f-ask").value) || 0,
     qty: Number(document.getElementById("f-qty").value) || 1,
   };
   vals.available = vals.status === "Assigned" ? 0 : vals.qty;
@@ -553,7 +1026,7 @@ document.getElementById("saveBtn").addEventListener("click", ()=>{
     DATA[idx] = {...DATA[idx], ...vals};
     showToast("Naming opportunity updated");
   } else {
-    DATA.unshift({id: Date.now(), ...vals});
+    DATA.unshift({id: Date.now(), fund:FUNDS[0], campaign:CAMPAIGNS[0], assignedInstance:null, ...vals});
     showToast("Naming opportunity created");
   }
   closeDrawer();
@@ -584,7 +1057,11 @@ document.addEventListener("click", (e)=>{
 });
 document.getElementById("filterBtn").addEventListener("click", ()=> showToast("Filter panel — placeholder"));
 
+/* =====================================================================
+   Init
+   ===================================================================== */
 renderAll();
+switchTab("list");
 </script>
 </body>
 </html>

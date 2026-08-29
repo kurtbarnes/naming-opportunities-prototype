@@ -114,6 +114,30 @@
   .context-menu-naming li{padding:8px 14px;font-size:13px;cursor:pointer;white-space:nowrap;color:var(--sky-text);}
   .context-menu-naming li:hover{background:#f4f6f8;}
 
+  /* ---- Mapping card ---- */
+  .map-card .card-head{background:#0d3854;border-radius:4px 4px 0 0;}
+  .map-card .card-head h3{color:#fff;display:flex;align-items:center;gap:8px;}
+  .map-card .card-head .drag{color:#6f92ab;}
+  .map-intro{font-size:12.5px;color:var(--sky-text-dim);line-height:1.5;margin:0 0 12px;}
+  .map-setting{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dotted var(--sky-border);font-size:13px;}
+  .map-setting:last-of-type{border-bottom:0;}
+  .map-setting label{color:var(--sky-text-dim);}
+  .map-setting select{border:1px solid var(--sky-border);border-radius:3px;padding:4px 8px;font-size:12.5px;}
+  .map-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
+  .map-switch input{opacity:0;width:100%;height:100%;margin:0;cursor:pointer;}
+  .map-switch .track{position:absolute;inset:0;background:#c9ced3;border-radius:11px;transition:background .15s;pointer-events:none;}
+  .map-switch .track::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .15s;}
+  .map-switch input:checked + .track{background:#2f9e44;}
+  .map-switch input:checked + .track::after{transform:translateX(18px);}
+  .map-colors{display:flex;flex-wrap:wrap;gap:12px;padding:10px 0 4px;}
+  .map-colors label{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sky-text-dim);}
+  .map-colors input[type=color]{width:34px;height:24px;border:1px solid var(--sky-border);padding:0;background:none;border-radius:3px;}
+  .map-colors input[type=text]{width:56px;border:1px solid var(--sky-border);border-radius:3px;padding:4px 6px;font-size:12.5px;}
+  .map-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .map-snippet{margin-top:10px;background:#0f1e2e;color:#e9d9ae;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.5;padding:10px 12px;border-radius:4px;white-space:pre-wrap;word-break:break-all;display:none;}
+  .map-snippet.show{display:block;}
+  .map-note{font-size:11.5px;color:var(--sky-text-dim);font-style:italic;margin-top:10px;}
+
   /* ---- Admin Settings cards ---- */
   .admin-columns{display:flex;gap:20px;align-items:flex-start;}
   .admin-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px;}
@@ -605,6 +629,122 @@ function tableCard(title, headers, rows){
   </div>`;
 }
 
+/* ---- Mapping settings (drives the sharable Mapping prototype) ---- */
+const MAPPING_URL = "https://kurtbarnes.github.io/naming-opportunities-mapping/";
+const mappingSettings = {
+  enabled: true,
+  campus: "campus-riverbend",
+  visitorDefault: "all",
+  org: "Riverbend Campus",
+  logo: "R",
+  accent: "#C89A4C",
+  header: "#0F1E2E",
+  page: "#F7F4EC"
+};
+
+function mappingLaunchUrl(session){
+  const p = new URLSearchParams({
+    session: session || "admin",
+    campus: mappingSettings.campus,
+    visdefault: mappingSettings.visitorDefault,
+    org: mappingSettings.org,
+    logo: mappingSettings.logo,
+    accent: mappingSettings.accent,
+    header: mappingSettings.header,
+    page: mappingSettings.page
+  });
+  return MAPPING_URL + "?" + p.toString();
+}
+function mappingEmbedSnippet(){
+  const p = new URLSearchParams({
+    campus: mappingSettings.campus, org: mappingSettings.org, logo: mappingSettings.logo,
+    accent: mappingSettings.accent, header: mappingSettings.header, page: mappingSettings.page, height: "680"
+  });
+  return '<div id="naming-map"></div>\n<script src="' + MAPPING_URL + 'embed.js"\n  data-config="' + p.toString() + '" async><\/script>';
+}
+
+function mappingCard(){
+  const s = mappingSettings;
+  return `<div class="card map-card">
+    <div class="card-head"><h3>&#128506; Mapping</h3><span class="drag">&#8942;&#8942;</span></div>
+    <div class="card-body">
+      <p class="map-intro">Place naming opportunity objects on uploaded campus, building and floor maps.
+        Visitors browse the map or search a name and are taken straight to it. Configure the visitor-facing
+        experience here, then open the mapping tool or embed it on your website.</p>
+
+      <div class="map-setting">
+        <label for="map-enabled">Mapping experience enabled</label>
+        <span class="map-switch"><input type="checkbox" id="map-enabled" ${s.enabled ? "checked" : ""}><span class="track"></span></span>
+      </div>
+      <div class="map-setting">
+        <label for="map-campus">Default campus</label>
+        <select id="map-campus">
+          <option value="campus-riverbend" ${s.campus === "campus-riverbend" ? "selected" : ""}>Riverbend Campus</option>
+          <option value="campus-northgate" ${s.campus === "campus-northgate" ? "selected" : ""}>Northgate Medical Campus</option>
+        </select>
+      </div>
+      <div class="map-setting">
+        <label for="map-visdefault">Visitor display default</label>
+        <select id="map-visdefault">
+          <option value="all" ${s.visitorDefault === "all" ? "selected" : ""}>Show all objects</option>
+          <option value="named-only" ${s.visitorDefault === "named-only" ? "selected" : ""}>Named objects only</option>
+          <option value="hide-available" ${s.visitorDefault === "hide-available" ? "selected" : ""}>Hide unassigned / available</option>
+        </select>
+      </div>
+      <div class="map-setting">
+        <label for="map-org">Organization name / logo</label>
+        <span><input type="text" id="map-org" value="${s.org}" style="width:150px;border:1px solid var(--sky-border);border-radius:3px;padding:4px 6px;font-size:12.5px;">
+        <input type="text" id="map-logo" value="${s.logo}" maxlength="2" style="width:40px;border:1px solid var(--sky-border);border-radius:3px;padding:4px 6px;font-size:12.5px;"></span>
+      </div>
+
+      <div class="map-colors">
+        <label>Accent <input type="color" id="map-accent" value="${s.accent}"></label>
+        <label>Header <input type="color" id="map-header" value="${s.header}"></label>
+        <label>Page <input type="color" id="map-page" value="${s.page}"></label>
+      </div>
+
+      <div class="map-actions">
+        <button class="sky-btn sky-btn-primary" id="map-open"><i class="fa fa-external-link"></i> Open mapping experience</button>
+        <button class="sky-btn sky-btn-default" id="map-preview">Preview as visitor</button>
+        <button class="sky-btn sky-btn-default" id="map-embedbtn"><i class="fa fa-code"></i> Embed code</button>
+      </div>
+      <pre class="map-snippet" id="map-snippet"></pre>
+      <p class="map-note">Opening the tool from here passes your Raiser&#39;s Edge NXT admin session so it lands in Admin mode &mdash; no separate login.</p>
+    </div>
+  </div>`;
+}
+
+function wireMappingCard(){
+  const bind = (id, key, prop) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener(el.type === "checkbox" ? "change" : "input", () => {
+      mappingSettings[key] = el.type === "checkbox" ? el.checked : el.value;
+    });
+  };
+  bind("map-enabled","enabled"); bind("map-campus","campus"); bind("map-visdefault","visitorDefault");
+  bind("map-org","org"); bind("map-logo","logo");
+  bind("map-accent","accent"); bind("map-header","header"); bind("map-page","page");
+
+  const open = document.getElementById("map-open");
+  if(open) open.addEventListener("click", ()=>{
+    if(!mappingSettings.enabled){ showToast("Mapping experience is disabled"); return; }
+    window.open(mappingLaunchUrl("admin"), "_blank", "noopener");
+  });
+  const prev = document.getElementById("map-preview");
+  if(prev) prev.addEventListener("click", ()=> window.open(mappingLaunchUrl("public"), "_blank", "noopener"));
+
+  const embedBtn = document.getElementById("map-embedbtn");
+  const snip = document.getElementById("map-snippet");
+  if(embedBtn) embedBtn.addEventListener("click", ()=>{
+    snip.textContent = mappingEmbedSnippet();
+    snip.classList.toggle("show");
+    if(snip.classList.contains("show") && navigator.clipboard){
+      navigator.clipboard.writeText(mappingEmbedSnippet()).then(()=> showToast("Embed snippet copied"), ()=>{});
+    }
+  });
+}
+
 function renderAdmin(){
   const el = document.getElementById("panel-admin");
   const leftCol = [
@@ -638,6 +778,7 @@ function renderAdmin(){
     ])
   ];
   const rightCol = [
+    mappingCard(),
     listCard("Types", ["Building","Outdoor","Student Use Only","General"]),
     tableCard("Workflow Templates", ["Name","Description","Type"], [
       ["Removal Step Templates","Generic workflow for Naming Object Removal","Removal"],
@@ -655,6 +796,7 @@ function renderAdmin(){
     <div class="admin-col">${leftCol.join("")}</div>
     <div class="admin-col">${rightCol.join("")}</div>
   </div>`;
+  wireMappingCard();
 }
 
 /* =====================================================================

@@ -138,6 +138,24 @@
   .map-snippet.show{display:block;}
   .map-note{font-size:11.5px;color:var(--sky-text-dim);font-style:italic;margin-top:10px;}
 
+  /* ---- In the Field card ---- */
+  .field-card .card-head{background:#0f6e5c;border-radius:4px 4px 0 0;}
+  .field-card .card-head h3{color:#fff;display:flex;align-items:center;gap:8px;}
+  .field-card .card-head .drag{color:#7fbdb0;}
+  .field-pass-label{display:block;font-size:13px;font-weight:600;color:var(--sky-text);margin:4px 0 6px;}
+  .field-pass-row{display:flex;gap:8px;margin-bottom:20px;}
+  .field-pass-row input{flex:1;border:1px solid var(--sky-border);border-radius:3px;padding:7px 10px;font-size:13px;outline:0;}
+  .field-pass-row input:focus{border-color:var(--sky-blue);}
+  .field-grid{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;}
+  .field-tile{width:150px;height:150px;flex-shrink:0;border:1px solid var(--sky-border);border-radius:4px;background:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:14px;color:var(--sky-text);text-align:center;line-height:1.35;font-family:inherit;}
+  .field-tile:hover{background:#f4f6f8;border-color:var(--sky-blue);}
+  .field-tile-icon{font-size:34px;line-height:1;}
+  .field-share{padding-top:4px;}
+  .field-share-title{font-size:14px;font-weight:700;color:var(--sky-text);margin-bottom:12px;}
+  .field-share-link{display:flex;align-items:center;gap:9px;background:none;border:none;color:var(--sky-blue);font-size:13.5px;cursor:pointer;padding:6px 0;font-family:inherit;}
+  .field-share-link:hover{text-decoration:underline;}
+  .field-share-link i{width:16px;text-align:center;}
+
   /* ---- Admin Settings cards ---- */
   .admin-columns{display:flex;gap:20px;align-items:flex-start;}
   .admin-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px;}
@@ -745,6 +763,99 @@ function wireMappingCard(){
   });
 }
 
+/* ---- In the Field settings (drives the mobile admin app) ---- */
+const FIELD_APP_URL = "https://kurtbarnes.github.io/naming-mobile-admin/";
+const FIELD_PW_KEY = "naming-in-the-field-pw";
+const fieldSettings = {
+  password: (function(){ try { return localStorage.getItem(FIELD_PW_KEY) || ""; } catch(e){ return ""; } })()
+};
+
+function fieldShareUrl(){
+  const pw = (fieldSettings.password || "").trim();
+  return FIELD_APP_URL + (pw ? "#pw=" + encodeURIComponent(pw) : "");
+}
+
+function inTheFieldCard(){
+  const masked = fieldSettings.password ? fieldSettings.password : "";
+  return `<div class="card field-card">
+    <div class="card-head"><h3>&#128241; In the Field</h3><span class="drag">&#8942;&#8942;</span></div>
+    <div class="card-body">
+      <p class="map-intro">The In the Field mobile app lets gift officers browse naming opportunities,
+        update records, add photos, and complete fulfillment tasks from a phone while on site.</p>
+
+      <label class="field-pass-label" for="field-pw">Set In the Field Interface Password:</label>
+      <div class="field-pass-row">
+        <input type="password" id="field-pw" value="${masked.replace(/"/g,'&quot;')}" autocomplete="new-password" placeholder="No password set">
+        <button class="sky-btn sky-btn-primary" id="field-pw-update">Update</button>
+      </div>
+
+      <div class="field-grid">
+        <button class="field-tile" id="field-open">
+          <span class="field-tile-icon">&#128203;</span>
+          <span>Open<br>In the Field App</span>
+        </button>
+        <div class="field-share">
+          <div class="field-share-title">Share In the Field App Access:</div>
+          <button class="field-share-link" id="field-copy"><i class="fa fa-clone"></i> Copy URL</button>
+          <button class="field-share-link" id="field-email"><i class="fa fa-envelope-o"></i> Share via Email</button>
+        </div>
+      </div>
+      <p class="map-note">When a password is set, the shared link opens the app behind a lock screen &mdash;
+        recipients enter the password once per device.</p>
+    </div>
+  </div>`;
+}
+
+function wireInTheFieldCard(){
+  const pwInput = document.getElementById("field-pw");
+  const updateBtn = document.getElementById("field-pw-update");
+  if(updateBtn) updateBtn.addEventListener("click", ()=>{
+    fieldSettings.password = pwInput.value.trim();
+    try {
+      if(fieldSettings.password) localStorage.setItem(FIELD_PW_KEY, fieldSettings.password);
+      else localStorage.removeItem(FIELD_PW_KEY);
+    } catch(e){}
+    showToast(fieldSettings.password ? "In the Field password updated" : "In the Field password cleared");
+  });
+
+  const openBtn = document.getElementById("field-open");
+  if(openBtn) openBtn.addEventListener("click", ()=> window.open(fieldShareUrl(), "_blank", "noopener"));
+
+  const copyBtn = document.getElementById("field-copy");
+  if(copyBtn) copyBtn.addEventListener("click", ()=>{
+    const url = fieldShareUrl();
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(url).then(
+        ()=> showToast("In the Field app URL copied"),
+        ()=> fieldFallbackCopy(url)
+      );
+    } else { fieldFallbackCopy(url); }
+  });
+
+  const emailBtn = document.getElementById("field-email");
+  if(emailBtn) emailBtn.addEventListener("click", ()=>{
+    const url = fieldShareUrl();
+    const subject = "Access to the In the Field mobile app";
+    const body =
+      "You've been given access to the Naming Opportunities In the Field mobile app.\n\n" +
+      "Open this link on your phone:\n" + url + "\n\n" +
+      (fieldSettings.password
+        ? "You'll be prompted for an access password the first time you open it on a device. " +
+          "Ask your administrator for the password if you don't have it.\n\n"
+        : "") +
+      "Add it to your home screen for quick access while you're on site.";
+    window.location.href = "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  });
+}
+
+function fieldFallbackCopy(text){
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); showToast("In the Field app URL copied"); } catch(e){ showToast("Copy failed — URL: " + text); }
+  ta.remove();
+}
+
 function renderAdmin(){
   const el = document.getElementById("panel-admin");
   const leftCol = [
@@ -779,6 +890,7 @@ function renderAdmin(){
   ];
   const rightCol = [
     mappingCard(),
+    inTheFieldCard(),
     listCard("Types", ["Building","Outdoor","Student Use Only","General"]),
     tableCard("Workflow Templates", ["Name","Description","Type"], [
       ["Removal Step Templates","Generic workflow for Naming Object Removal","Removal"],
@@ -797,6 +909,7 @@ function renderAdmin(){
     <div class="admin-col">${rightCol.join("")}</div>
   </div>`;
   wireMappingCard();
+  wireInTheFieldCard();
 }
 
 /* =====================================================================
